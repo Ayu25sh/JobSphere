@@ -55,14 +55,15 @@ import connectDB from "@/lib/db/connect";
 import { getUser } from "@/lib/auth";
 
 // The GET function receives the request and context as arguments
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params; // Destructure `id` from the params
-
+export async function GET(request: NextRequest) {
   try {
     const user = await getUser(request);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Extract the id from the URL params using request.nextUrl
+    const { id } = request.nextUrl.pathname.split("/").pop()!; // Assumes ID is at the end of the URL
 
     await connectDB();
     
