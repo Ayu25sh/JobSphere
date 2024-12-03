@@ -70,7 +70,11 @@ export async function PUT(request: NextRequest) {
     await connectDB();
 
     // Extracting the id from the request URL using nextUrl.pathname
-    const { id } = request.nextUrl.pathname.split("/").pop()!;
+    const id = request.nextUrl.pathname.split("/").pop(); // Directly assign to `id`
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is missing" }, { status: 400 });
+    }
 
     const application = await Application.findById(id)
       .populate("jobId")

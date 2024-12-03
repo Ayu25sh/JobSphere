@@ -34,10 +34,14 @@ import connectDB from "@/lib/db/connect";
 export async function GET(request: NextRequest) {
   try {
     // Extracting the job id from the URL using request.nextUrl.pathname
-    const { id } = request.nextUrl.pathname.split("/").pop()!;
+    const id = request.nextUrl.pathname.split("/").pop(); // Directly assign the value to `id`
+
+    if (!id) {
+      return NextResponse.json({ error: "ID is missing" }, { status: 400 });
+    }
 
     await connectDB();
-    
+
     const job = await Job.findById(id).populate("postedBy", "name");
 
     if (!job) {
