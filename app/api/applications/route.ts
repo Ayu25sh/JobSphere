@@ -69,6 +69,11 @@ export async function GET(request: NextRequest) {
 
     await connectDB();
     
+    // Type guard to ensure user.id is a string
+    if (typeof user.id !== "string") {
+      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
+    }
+
     const query = user.role === "jobSeeker"
       ? { applicantId: user.id }
       : { jobId: { $in: await getEmployerJobIds(user.id) } };
